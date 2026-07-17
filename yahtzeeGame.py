@@ -44,21 +44,21 @@ class Scoresheet:
     def __init__(self, playername):
         self.playername = playername
 
-        self.ones = 0
-        self.twos = 0
-        self.threes = 0
-        self.fours = 0
-        self.fives = 0
-        self.sixes = 0
-        self.upperbonus = 0
-        self.threeofakind = 0
-        self.fourofakind = 0
-        self.fullhouse = 0
-        self.smallstraight = 0
-        self.largestraight = 0
-        self.chance = 0
-        self.yahtzee = 0
-        self.yahtzeebonuses = 0
+        self.ones = -1
+        self.twos = -1
+        self.threes = -1
+        self.fours = -1
+        self.fives = -1
+        self.sixes = -1
+        self.upperbonus = -1
+        self.threeofakind = -1
+        self.fourofakind = -1
+        self.fullhouse = -1
+        self.smallstraight = -1
+        self.largestraight = -1
+        self.chance = -1
+        self.yahtzee = -1
+        self.yahtzeebonuses = -1
 
 
 class DiceCup:
@@ -81,9 +81,61 @@ class DiceCup:
         for die in dicearray1:
             print(f"{indie} - {die}")
             indie += 1
-        print("Which ones do you want to keep?")
+        print("Which ones do you want to keep? ")
+        selection = input("Enter the numbers of the ones you want to keep: ")
+        # print(selection)
+        # print(type(selection))
+        #parse the selection
+        strlist = selection.split(",")
+        # print(strlist)
+        int_list = [int (x) for x in strlist] #convert to integers
+        # print(int_list)
+        for x in range(5):
+            if (x+1) in int_list:
+                continue
+            else:
+                dicearray1[x] = randint(1,6)
+        # print(dicearray1)
+        #
+        indie = 1
+        print("Here are the results of your second roll ")
+        for die in dicearray1:
+            print(f"{indie} - {die}")
+            indie += 1
+        print("Which ones do you want to keep? ")
+        selection = input("Enter the numbers of the ones you want to keep: ")
+        # print(selection)
+        # print(type(selection))
+        #parse the selection
+        
+        strlist = selection.split(",")
+        # print(strlist)
+        int_list = [int (m) for m in strlist] #convert to integers
+        # print(int_list)
+        x=0
+        for x in range(5):
+            if (x+1) in int_list:
+                continue
+            else:
+                dicearray1[x] = randint(1,6)
+        print("Here is your final result")
+        for die in dicearray1:
+            print(f"{indie} - {die}")
+            indie += 1
+        #print(dicearray1)
+        return dicearray1
+
             
 
+def wheretoscore(fivedice, playersheet):
+    global selectionList
+    print("you have the following dice")
+
+    for die in fivedice:
+        print(f"- {die}")
+    print("How do you want to score them")
+    for item in selectionList:
+        print(f"{item.title()} = {playersheet.item}")
 
 
 
@@ -98,5 +150,11 @@ cup = DiceCup()
 x = cup.numberofdice
 y = cup.diceArray[0].roll()
 j = cup.firstroll()
-cup.secondroll(j)
+k = cup.secondroll(j)
+# k is an array so we will sort it
+k.sort()
+
+print(k)
+
+wheretoscore(k, mysheet)
 
