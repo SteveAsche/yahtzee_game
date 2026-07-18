@@ -60,6 +60,11 @@ class Scoresheet:
         self.yahtzee = -1
         self.yahtzeebonuses = -1
 
+    def printsheet(self):
+        global selectionList
+        for item in selectionList:
+            print(f"{item.title()} = {getattr(self, item)}")
+
 
 class DiceCup:
     # a class to represent the dice roll
@@ -134,9 +139,94 @@ def wheretoscore(fivedice, playersheet):
     for die in fivedice:
         print(f"- {die}")
     print("How do you want to score them")
-    for item in selectionList:
-        print(f"{item.title()} = {playersheet.item}")
+    playersheet.printsheet()
 
+    invalid = True
+    while invalid:
+        scoreHere = input("Type the category where you want to score: ")
+        scoreHere = scoreHere.strip().lower()
+        if scoreHere in selectionList:
+            # valid choice 
+            if getattr(playersheet, scoreHere) == -1:
+                # okay to score it here
+                # test the dice against the category  - this should be a function
+                match scoreHere:
+                    case "ones":
+                        newval = fivedice.count(1) * 1
+                        #setattr(playersheet, scoreHere, newval)
+                    case "twos":
+                        newval = fivedice.count(2) * 2
+                        #setattr(playersheet, scoreHere, newval)
+                    case "threes":
+                        newval = fivedice.count(3) * 3
+                        #setattr(playersheet, scoreHere, newval)
+                    case "fours":
+                        newval = fivedice.count(4) * 4
+                        #setattr(playersheet, scoreHere, newval)
+                    case "fives":
+                        newval = fivedice.count(5) * 5
+                        #setattr(playersheet, scoreHere, newval)
+                    case "sixes":
+                        newval = fivedice.count(6) * 6
+                        #setattr(playersheet, scoreHere, newval)
+                    case "threeofakind":
+                        if any(fivedice.count(x) >= 3 for x in set(fivedice)):
+                            newval = sum(fivedice)
+                            #setattr(playersheet, scoreHere, newval)
+                        else:
+                            print("You don't have three of a kind.  You'll take a zero (0) in this category")
+                            newval = 0
+                            #setattr(playersheet, scoreHere, newval)
+                    case "fourofakind":
+                        if any(fivedice.count(x) >= 4 for x in set(fivedice)):
+                            newval = sum(fivedice)
+                            #setattr(playersheet, scoreHere, newval)
+                        else:
+                            print("You don't have four of a kind.  You'll take a zero (0) in this category")
+                            newval = 0
+                            #setattr(playersheet, scoreHere, newval)
+                    case "fullhouse":
+                        counts = [fivedice.count(x) for x in set(fivedice)]
+                        if 3 in counts and 2 in counts:
+                            newval = 25
+                        else:
+                            print("you don't have a full house")
+                            newval = 0
+                    case "smallstraight":
+                        # Convert to a sorted list of unique numbers to remove duplicates (like)
+                        unique_dice = sorted(list(set(fivedice)))
+                        unique_string = "".join(str(x) for x in unique_dice)
+        
+                        # Check if any of the three possible small straight sequences are hidden inside the string
+                        if "1234" in unique_string or "2345" in unique_string or "3456" in unique_string:
+                            newval = 30
+                        else:
+                            newval = 0
+                            print("You don't have a small straight.  You'll get zero in this category")
+                    case "largestraight":
+                        sorted_dice = sorted(fivedice)
+                        # There are only two possible combinations for a large straight
+                        if sorted_dice == [1, 2, 3, 4, 5] or sorted_dice == [2, 3, 4, 5, 6]:
+                             newval = 40
+                        else:
+                            newval = 0
+                            print("You don't have a large straight.  You get a 0")
+
+    
+                setattr(playersheet, scoreHere, newval)
+
+
+                invalid = False
+            else:
+                print("Not that section has been scored before")
+        else:
+            print("invalid category")
+                    
+
+def printSheet(playersheet):
+    global selectionList
+    for item in selectionList:
+        print(f"{item.title()} = {getattr(playersheet, item)}")
 
 
 die1 = Die()
@@ -157,4 +247,5 @@ k.sort()
 print(k)
 
 wheretoscore(k, mysheet)
+mysheet.printsheet()
 
