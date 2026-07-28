@@ -58,6 +58,7 @@ class Scoresheet:
         self.largestraight = -1
         self.chance = -1
         self.yahtzee = -1
+        self.yahtzeeBonusFlag = False
         self.yahtzeebonuses = -1
 
     def printsheet(self):
@@ -140,6 +141,7 @@ def wheretoscore(fivedice, playersheet):
         print(f"- {die}")
     print("How do you want to score them")
     playersheet.printsheet()
+    # chack to see if the player's yahtzee bonus flage is set
 
     invalid = True
     while invalid:
@@ -211,6 +213,19 @@ def wheretoscore(fivedice, playersheet):
                         else:
                             newval = 0
                             print("You don't have a large straight.  You get a 0")
+                    case "chance":
+                        newval = sum(fivedice)
+                    case "yahtzee":
+                        if any(fivedice.count(x) == 5 for x in set(fivedice)):
+                            newval = 50
+                            #set the flag so they can get a bonus next time
+                            playersheet.yahtzeeBonusFlag = True
+
+                            #setattr(playersheet, scoreHere, newval)
+                        else:
+                            print("You don't have a yahtzee.  You'll take a zero (0) in this category")
+                            newval = 0
+                            #setattr(playersheet, scoreHere, newval)
 
     
                 setattr(playersheet, scoreHere, newval)
