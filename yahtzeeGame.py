@@ -50,7 +50,7 @@ class Scoresheet:
         self.fours = -1
         self.fives = -1
         self.sixes = -1
-        self.upperbonus = -1
+        self.upperbonus = 0
         self.threeofakind = -1
         self.fourofakind = -1
         self.fullhouse = -1
@@ -59,12 +59,32 @@ class Scoresheet:
         self.chance = -1
         self.yahtzee = -1
         self.yahtzeeBonusFlag = False
-        self.yahtzeebonuses = -1
+        self.yahtzeebonuses = 0
+        self.totalscore = 0
 
     def printsheet(self):
-        global selectionList
-        for item in selectionList:
-            print(f"{item.title()} = {getattr(self, item)}")
+        global printList
+        #global upperbonus
+        if (self.ones + self.twos + self.threes + self.fours + self.fives + self.sixes) >= 63:
+            self.upperbonus = 35
+        for item in printList:
+            holder = getattr(self, item)
+            if holder == -1:
+                holder = "--"
+            print(f"{item.title()} = {holder}")
+        #print(f"UpperBonus = {self.upperbonus}")
+
+    def tallyscore(self, totalscore=0):
+        # global upperbonus
+        upperScore = self.ones + self.twos + self.threes + self.fours + self.fives + self.sixes
+        if upperScore >= 63:
+            print(f"Your UpperScore is {upperScore} you get a bonus")
+            self.upperbonus = 35
+            upperScore += 35
+        lowerScore = self.threeofakind + self.fourofakind + self.fullhouse + self.smallstraight + self.largestraight + self.chance + self.yahtzee
+        bonusAmount = self.yahtzeebonuses * 100
+        totalscore = upperScore + lowerScore + bonusAmount
+        return totalscore        
 
 
 class DiceCup:
@@ -91,10 +111,14 @@ class DiceCup:
         selection = input("Enter the numbers of the ones you want to keep: ")
         # print(selection)
         # print(type(selection))
-        #parse the selection
-        strlist = selection.split(",")
-        # print(strlist)
-        int_list = [int (x) for x in strlist] #convert to integers
+        if selection.lower() == "all":
+            int_list = [1,2,3,4,5]
+        elif selection.lower() == "none":
+            int_list = []
+        else:
+            strlist = selection.split(",")
+            # print(strlist)
+            int_list = [int (x) for x in strlist] #convert to integers
         # print(int_list)
         for x in range(5):
             if (x+1) in int_list:
@@ -110,14 +134,18 @@ class DiceCup:
             indie += 1
         print("Which ones do you want to keep? ")
         selection = input("Enter the numbers of the ones you want to keep: ")
+        if selection.lower() == "all":
+            int_list = [1,2,3,4,5]
+        elif selection.lower() == "none":
+            int_list = []
+        else:
+            strlist = selection.split(",")
+            # print(strlist)
+            int_list = [int (m) for m in strlist] #convert to integers
         # print(selection)
         # print(type(selection))
         #parse the selection
-        
-        strlist = selection.split(",")
-        # print(strlist)
-        int_list = [int (m) for m in strlist] #convert to integers
-        # print(int_list)
+
         x=0
         for x in range(5):
             if (x+1) in int_list:
@@ -142,9 +170,18 @@ def wheretoscore(fivedice, playersheet):
     print("How do you want to score them")
     playersheet.printsheet()
     # chack to see if the player's yahtzee bonus flage is set
+    bonuscondition = False
 
     invalid = True
     while invalid:
+        if playersheet.yahtzeeBonusFlag and any(fivedice.count(x) == 5 for x in set(fivedice)):
+            print("Since you already have a yahtzee, you can select an element you haven't used before")
+            print("If you choose an upper sheet category, you'll get the sum of that number plus the bonus")
+            print("If you don't have the right number, you'll get a zero in that category, but you'll still get the bonus")
+            print("If you select a lower item, you'll get the value of that category.  Assuming that selectio is open.")
+            playersheet.yahtzeebonuses += 1
+            bonuscondition = True
+
         scoreHere = input("Type the category where you want to score: ")
         scoreHere = scoreHere.strip().lower()
         if scoreHere in selectionList:
@@ -189,7 +226,7 @@ def wheretoscore(fivedice, playersheet):
                             #setattr(playersheet, scoreHere, newval)
                     case "fullhouse":
                         counts = [fivedice.count(x) for x in set(fivedice)]
-                        if 3 in counts and 2 in counts:
+                        if (3 in counts and 2 in counts) or (bonuscondition):
                             newval = 25
                         else:
                             print("you don't have a full house")
@@ -200,7 +237,7 @@ def wheretoscore(fivedice, playersheet):
                         unique_string = "".join(str(x) for x in unique_dice)
         
                         # Check if any of the three possible small straight sequences are hidden inside the string
-                        if "1234" in unique_string or "2345" in unique_string or "3456" in unique_string:
+                        if ("1234" in unique_string or "2345" in unique_string or "3456" in unique_string) or (bonuscondition):
                             newval = 30
                         else:
                             newval = 0
@@ -208,7 +245,7 @@ def wheretoscore(fivedice, playersheet):
                     case "largestraight":
                         sorted_dice = sorted(fivedice)
                         # There are only two possible combinations for a large straight
-                        if sorted_dice == [1, 2, 3, 4, 5] or sorted_dice == [2, 3, 4, 5, 6]:
+                        if (sorted_dice == [1, 2, 3, 4, 5] or sorted_dice == [2, 3, 4, 5, 6]) or (bonuscondition):
                              newval = 40
                         else:
                             newval = 0
@@ -233,26 +270,28 @@ def wheretoscore(fivedice, playersheet):
 
                 invalid = False
             else:
-                print("Not that section has been scored before")
+                print("That section has been scored before")
         else:
             print("invalid category")
                     
-
+"""
 def printSheet(playersheet):
     global selectionList
     for item in selectionList:
         print(f"{item.title()} = {getattr(playersheet, item)}")
-
+"""
 
 die1 = Die()
 die2 = Die()
 selectionList = ["ones","twos","threes","fours","fives","sixes","threeofakind","fourofakind","fullhouse","smallstraight","largestraight","chance","yahtzee"]
+printList = ["ones","twos","threes","fours","fives","sixes","upperbonus","threeofakind","fourofakind","fullhouse","smallstraight","largestraight","chance","yahtzee","yahtzeebonuses"]
 
 mysheet = Scoresheet("Steve")
 print(mysheet.playername)
 print(mysheet.ones)
 cup = DiceCup()
 x = cup.numberofdice
+"""
 y = cup.diceArray[0].roll()
 j = cup.firstroll()
 k = cup.secondroll(j)
@@ -263,4 +302,27 @@ print(k)
 
 wheretoscore(k, mysheet)
 mysheet.printsheet()
+"""
 
+for p in range(13):
+    y = cup.diceArray[0].roll()
+    j = cup.firstroll()
+    k = cup.secondroll(j)
+    # k is an array so we will sort it
+    k.sort()
+
+    print(k)
+
+    wheretoscore(k, mysheet)
+    mysheet.printsheet() 
+
+
+print("***************")
+print(f"Final Score for {mysheet.playername}")
+tscore = mysheet.tallyscore()
+
+#print(f"You total score is {mysheet.tallyscore()}")
+mysheet.printsheet()
+if mysheet.yahtzeebonuses > 0:
+    print(f"Yahtzee bonus = {mysheet.yahtzeebonuses * 100}")
+print(f"Total = {tscore}")
