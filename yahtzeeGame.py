@@ -338,5 +338,5 @@ tscore = mysheet.tallyscore()
 #print(f"You total score is {mysheet.tallyscore()}")
 mysheet.printsheet()
 if mysheet.yahtzeebonuses > 0:
-    print(f"Yahtzee bonus = {mysheet.yahtzeebonuses * 100}")
+    print(f"{'Yahtzee bonus':<16} = {mysheet.yahtzeebonuses * 100:>10}")
 print(f"{'Total':<16} = {tscore:>10}")
