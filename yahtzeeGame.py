@@ -71,7 +71,7 @@ class Scoresheet:
             holder = getattr(self, item)
             if holder == -1:
                 holder = "--"
-            print(f"{item.title()} = {holder}")
+            print(f"{item.title():<16} = {holder:>10}")
         #print(f"UpperBonus = {self.upperbonus}")
 
     def tallyscore(self, totalscore=0):
@@ -102,11 +102,14 @@ class DiceCup:
     
     def secondroll(self, dicearray1):
         #dice array 1 is an array of already rolled dice
-        indie = 1
+        #indie = 1
         print("Here are the dice you rolled")
+        print(f"1 2 3 4 5 ")
+        print(f"| | | | |")
         for die in dicearray1:
-            print(f"{indie} - {die}")
-            indie += 1
+            print(f"{die}", end=" ")
+            #indie += 1
+        print(" ")
         print("Which ones do you want to keep? ")
         selection = input("Enter the numbers of the ones you want to keep: ")
         # print(selection)
@@ -127,12 +130,16 @@ class DiceCup:
                 dicearray1[x] = randint(1,6)
         # print(dicearray1)
         #
-        indie = 1
+        #indie = 1
         print("Here are the results of your second roll ")
+        print(f"1 2 3 4 5 ")
+        print(f"| | | | |")
         for die in dicearray1:
-            print(f"{indie} - {die}")
-            indie += 1
-        print("Which ones do you want to keep? ")
+            print(f"{die}", end=" ")
+            #indie += 1
+        print(" ")
+        print("Which ones to you want to keep? ")
+
         selection = input("Enter the numbers of the ones you want to keep: ")
         if selection.lower() == "all":
             int_list = [1,2,3,4,5]
@@ -153,9 +160,14 @@ class DiceCup:
             else:
                 dicearray1[x] = randint(1,6)
         print("Here is your final result")
+        print(f"1 2 3 4 5 ")
+        print(f"| | | | |")
         for die in dicearray1:
-            print(f"{indie} - {die}")
-            indie += 1
+            print(f"{die}", end=" ")
+            #indie += 1
+        print(" ")
+        print(" ")
+
         #print(dicearray1)
         return dicearray1
 
@@ -164,9 +176,11 @@ class DiceCup:
 def wheretoscore(fivedice, playersheet):
     global selectionList
     print("you have the following dice")
-
     for die in fivedice:
-        print(f"- {die}")
+        print(f"{die}", end=" ")
+            #indie += 1
+    print(" ")
+    print(" ")
     print("How do you want to score them")
     playersheet.printsheet()
     # chack to see if the player's yahtzee bonus flage is set
@@ -311,7 +325,7 @@ for p in range(13):
     # k is an array so we will sort it
     k.sort()
 
-    print(k)
+    #print(k)
 
     wheretoscore(k, mysheet)
     mysheet.printsheet() 
@@ -325,4 +339,4 @@ tscore = mysheet.tallyscore()
 mysheet.printsheet()
 if mysheet.yahtzeebonuses > 0:
     print(f"Yahtzee bonus = {mysheet.yahtzeebonuses * 100}")
-print(f"Total = {tscore}")
+print(f"{'Total':<16} = {tscore:>10}")
