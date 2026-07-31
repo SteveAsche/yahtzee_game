@@ -25,6 +25,8 @@ The Zero Penalty: If the corresponding Upper box is filled and all Lower Section
 # Define players
 # Create the scoresheet as a class
 from random import randint
+import keyboard
+
 # create a dice rolling simulation
 
 class Die:
@@ -110,6 +112,7 @@ class DiceCup:
             print(f"{die}", end=" ")
             #indie += 1
         print(" ")
+        # ---- This is the section to change
         print("Which ones do you want to keep? ")
         selection = input("Enter the numbers of the ones you want to keep: ")
         # print(selection)
@@ -294,6 +297,7 @@ def printSheet(playersheet):
     for item in selectionList:
         print(f"{item.title()} = {getattr(playersheet, item)}")
 """
+
 
 die1 = Die()
 die2 = Die()
