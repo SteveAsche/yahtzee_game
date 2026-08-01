@@ -25,8 +25,23 @@ The Zero Penalty: If the corresponding Upper box is filled and all Lower Section
 # Define players
 # Create the scoresheet as a class
 from random import randint
-import keyboard
+import sys
+import termios
+import tty
+#import keyboard
 
+def getch():
+    # Save the current terminal settings
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        # Set the terminal to raw mode to catch raw keystrokes
+        tty.setraw(sys.stdin.fileno())
+        ch = sys.stdin.read(1)
+    finally:
+        # Always restore the terminal settings afterward
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return ch
 # create a dice rolling simulation
 
 class Die:
@@ -101,17 +116,23 @@ class DiceCup:
             croll.append(die.roll())
             
         return croll
+
+    def showdice(self, dicearray2):
+        #print("Here are the dice you rolled")
+        print("Here are the dice you rolled")
+        print(f"1 2 3 4 5 ")
+        print(f"| | | | |")
+        for die in dicearray2:
+            print(f"{die}", end=" ")
+            #indie += 1
+        print(" ")
+
+    # take the value from the dicearray and return a set of indices to change
     
     def secondroll(self, dicearray1):
         #dice array 1 is an array of already rolled dice
         #indie = 1
-        print("Here are the dice you rolled")
-        print(f"1 2 3 4 5 ")
-        print(f"| | | | |")
-        for die in dicearray1:
-            print(f"{die}", end=" ")
-            #indie += 1
-        print(" ")
+        self.showdice(dicearray1)
         # ---- This is the section to change
         print("Which ones do you want to keep? ")
         selection = input("Enter the numbers of the ones you want to keep: ")
@@ -126,6 +147,7 @@ class DiceCup:
             # print(strlist)
             int_list = [int (x) for x in strlist] #convert to integers
         # print(int_list)
+        # loop through the indices of the dicearray.  X refers to the position of the die not the value
         for x in range(5):
             if (x+1) in int_list:
                 continue
@@ -134,13 +156,14 @@ class DiceCup:
         # print(dicearray1)
         #
         #indie = 1
-        print("Here are the results of your second roll ")
-        print(f"1 2 3 4 5 ")
-        print(f"| | | | |")
-        for die in dicearray1:
-            print(f"{die}", end=" ")
+        self.showdice(dicearray1)
+        #print("Here are the results of your second roll ")
+        #print(f"1 2 3 4 5 ")
+        #print(f"| | | | |")
+        #for die in dicearray1:
+        #    print(f"{die}", end=" ")
             #indie += 1
-        print(" ")
+        #print(" ")
         print("Which ones to you want to keep? ")
 
         selection = input("Enter the numbers of the ones you want to keep: ")
@@ -163,11 +186,7 @@ class DiceCup:
             else:
                 dicearray1[x] = randint(1,6)
         print("Here is your final result")
-        print(f"1 2 3 4 5 ")
-        print(f"| | | | |")
-        for die in dicearray1:
-            print(f"{die}", end=" ")
-            #indie += 1
+        self.showdice(dicearray1)
         print(" ")
         print(" ")
 
