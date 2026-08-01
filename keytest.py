@@ -113,10 +113,13 @@ def modifylist(dicearrayz):
 
 
 print("Press any key...")
-print(modifylist(darray1))
-
+#print(modifylist(darray1))
+retr = f"'\n'"
 
 char = "1"
 while char != "q":
     char = getch()
     print(f"You pressed: {char}")
+    print(f"ASCII value: {ord(char)}")
+    if ord(char) == 13:
+        print("You pressed Enter")
